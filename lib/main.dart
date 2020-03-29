@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ncovid/Constant.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ncovid/model/International.dart';
@@ -64,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
    International international = new International();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-
+    String _currentChoice = "Số ca";
   void _onRefresh() async{
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
@@ -87,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   
-  _makeGetRequest() async {
+  Future<void> _makeGetRequest() async {
   var url = 'https://code.junookyo.xyz/api/ncov-moh/data.json';
 
   // Await the http get response, then decode the json-formatted response.
@@ -105,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print('Request failed with status: ${response.statusCode}.');
   }
 }
- _makeWHOGetRequest() async {
+ Future<void>  _makeWHOGetRequest() async {
   var url = 'https://corona-api.com/countries';
 
   // Await the http get response, then decode the json-formatted response.
@@ -114,9 +115,9 @@ class _MyHomePageState extends State<MyHomePage> {
     var jsonResponse = convert.jsonDecode(response.body);
     
     setState(() {
-      
        international = International.fromJson(jsonResponse);
-       international.data.sort((b, a) => a.latestData.confirmed.compareTo(b.latestData.confirmed));
+       choiceAction(_currentChoice);
+       //international.data.sort((b, a) => a.latestData.confirmed.compareTo(b.latestData.confirmed));
     });
 
   } else {
@@ -124,13 +125,40 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 //
+
+  
   @override
   void initState() {
     
     super.initState();
-     timer = Timer.periodic(Duration(seconds: 5), (Timer t) { _makeGetRequest();
+     timer = Timer.periodic(Duration(seconds: 5), (Timer t) { 
+    _makeGetRequest();
     _makeWHOGetRequest();});
+    //  _makeGetRequest();
+    // _makeWHOGetRequest();
 
+  }
+  void choiceAction(String choice){
+    _currentChoice = choice;
+   if(choice ==Constant.sum){
+      setState(() {
+        international.data.sort((b, a) => a.latestData.confirmed.compareTo(b.latestData.confirmed));
+      });
+   }
+   else if(choice ==Constant.death){
+      setState(() {
+        international.data.sort((b, a) => a.latestData.deaths.compareTo(b.latestData.deaths));
+      });
+   }
+   else if(choice ==Constant.recovery){
+      setState(() {
+        international.data.sort((b, a) => a.latestData.recovered.compareTo(b.latestData.recovered));
+      });
+   }else if(choice ==Constant.critical){
+      setState(() {
+        international.data.sort((b, a) => a.latestData.critical.compareTo(b.latestData.critical));
+      });
+   }
   }
 @override
   void dispose() {
@@ -146,6 +174,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
        
         title: Text("nCovid Tracker"),
+        actions: <Widget>[
+          
+            PopupMenuButton<String>(
+              onSelected: choiceAction,
+              itemBuilder: (BuildContext context){
+                return Constant.option.map((String choice){
+                return PopupMenuItem(value: choice,
+                child: Text(choice),
+                );
+                }).toList();
+              },
+            )
+        ],
       ),
       body: isLoading
                 ? Column(
@@ -193,6 +234,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Text("Nguồn : Bộ Y Tế"),
             globalCard(),
             Text("Nguồn : Bộ Y Tế"),
+
+            hightline("Thống kê các quốc gia khác",Colors.redAccent),
+            hightline(_currentChoice,Colors.blueAccent),
             for(int i =0;i<international.data.length;i++) international.data[i].latestData.confirmed<1?Container(): detailCard(i),
                                           Padding(
                                             padding:
@@ -353,25 +397,51 @@ class _MyHomePageState extends State<MyHomePage> {
                                           ),
     ],);
   }
-  Widget hightline(String title, String content) {
-    return Row(
-      children: <Widget>[
-        
-        Padding(
-          padding: const EdgeInsets.only(left:10  ),
-          child: Center(
-            child: Text(title,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-          ),
-        ),
-        
-        Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left:5),
-              child: Text(content,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal)),
-            )),
-      ],
-    );
+  Widget hightline(String title,Color colors) {
+    return Padding(
+                                padding: EdgeInsets.only(
+                                  top: 50,
+                                    right: 0,
+                                    left: 0,
+                                    bottom: 0),
+                                child: Material(
+                                  elevation: 10.0,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  shadowColor: Colors.white,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        ),
+                                        Wrap(
+                                          children: <Widget>[
+                                            Icon(Icons.sort,
+                                            color: Colors.blueAccent,
+                                            ),
+                                            Text(
+                                              title,
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: colors,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                            )
+                                          ],
+                                        ),
+                                        
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
   }
 }
