@@ -158,6 +158,20 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         international.data.sort((b, a) => a.latestData.critical.compareTo(b.latestData.critical));
       });
+   }else if(choice ==Constant.recoverRatio){
+      setState(() {
+        international.data.sort((b, a) => international.calculateRatio(a.latestData.recovered, a.latestData.confirmed).compareTo(international.calculateRatio(b.latestData.recovered, b.latestData.confirmed)));
+      });
+   }
+   else if(choice ==Constant.deathRatio){
+      setState(() {
+        international.data.sort((b, a) => international.calculateRatio(a.latestData.deaths, a.latestData.confirmed).compareTo(international.calculateRatio(b.latestData.deaths, b.latestData.confirmed)));
+      });
+   }
+   if(choice ==Constant.alphabet){
+      setState(() {
+        international.data.sort((a, b) => a.name.compareTo(b.name));
+      });
    }
   }
 @override
@@ -304,8 +318,26 @@ class _MyHomePageState extends State<MyHomePage> {
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 20),
                                           ),
-                                          card("Tổng số ca tử vong: ",
+                                          card("Tỷ lệ hồi phục: ",
+                                                international.calculateRatio(int.parse(vietnam.data.vietnam.recovered), int.parse(vietnam.data.vietnam.cases)).toStringAsFixed(1)+"%"
+                                                )
+                                          ,
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          ),
+
+                                           card("Tổng số ca tử vong: ",
                                               vietnam.data.vietnam.deaths),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          ),
+                                          
+                                          card("Tỷ lệ tử vong: ",
+                                                international.calculateRatio(int.parse(vietnam.data.vietnam.deaths), int.parse(vietnam.data.vietnam.cases)).toStringAsFixed(1)+"%"
+                                                )
+                                          ,
                                           Padding(
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -321,6 +353,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 5),
                                           ),
+                                          Text((rank+1).toString()),
                                           card("Quốc gia: ",
                                               international.data[i].name),
                                           hr,
@@ -340,6 +373,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 20),
                                           ),
+                                          card("Tỉ lệ hồi phục: ",
+                                             international.calculateRatio(international.data[i].latestData.recovered, international.data[i].latestData.confirmed).toStringAsFixed(1)+"%"),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          ),
                                           card("Số ca đang nguy kịch ",
                                              international.data[i].latestData.critical.toString()),
                                           Padding(
@@ -352,6 +391,25 @@ class _MyHomePageState extends State<MyHomePage> {
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 20),
                                           ),
+                                          card("Tỉ lệ tử vong: ",
+                                             international.calculateRatio(international.data[i].latestData.deaths, international.data[i].latestData.confirmed).toStringAsFixed(1)+"%"),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          ),
+                                          card("Ca nhiễm mới nhất: ",
+                                             international.data[i].today.confirmed.toString()),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          ),
+                                          card("Ca tử vong mới nhất: ",
+                                             international.data[i].today.deaths.toString()),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          )
+                                          
     ],);
   }
   Widget globalCard(){
@@ -389,8 +447,24 @@ class _MyHomePageState extends State<MyHomePage> {
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 20),
                                           ),
+                                          card("Tỷ lệ hồi phục trung bình: ",
+                                                international.calculateRatio(int.parse(vietnam.data.global.recovered), int.parse(vietnam.data.global.cases)).toStringAsFixed(1)+"%"
+                                                )
+                                          ,Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          ),
+                                          
                                           card("Tổng số ca tử vong: ",
                                               vietnam.data.global.deaths),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                          ),
+                                          card("Tỷ lệ tử vong trung bình: ",
+                                                international.calculateRatio(int.parse(vietnam.data.global.deaths), int.parse(vietnam.data.global.cases)).toStringAsFixed(1)+"%"
+                                                )
+                                          ,
                                           Padding(
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 20),

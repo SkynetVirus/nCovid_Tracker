@@ -22,6 +22,9 @@ class International {
     data['_cacheHit'] = this.bCacheHit;
     return data;
   }
+  double calculateRatio(int a,int total){
+    return a/(total)*100;
+  }
 }
 
 class Data {
