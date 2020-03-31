@@ -353,7 +353,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 5),
                                           ),
-                                          Text((rank+1).toString()),
+                                          Text(("Hạng : "+(i+1).toString())),
                                           card("Quốc gia: ",
                                               international.data[i].name),
                                           hr,
