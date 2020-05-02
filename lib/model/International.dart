@@ -154,9 +154,9 @@ class LatestData {
 }
 
 class Calculated {
-  Null deathRate;
-  Null recoveryRate;
-  Null recoveredVsDeathRatio;
+  dynamic deathRate;
+  dynamic recoveryRate;
+  dynamic recoveredVsDeathRatio;
   var casesPerMillionPopulation;
 
   Calculated(

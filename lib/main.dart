@@ -4,7 +4,6 @@ import 'package:flag/flag.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ncovid/Constant.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -146,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
    }
    else if(choice ==Constant.death){
-      setState(() {
+      setState(() { 
         international.data.sort((b, a) => a.latestData.deaths.compareTo(b.latestData.deaths));
       });
    }
@@ -160,7 +159,8 @@ class _MyHomePageState extends State<MyHomePage> {
       });
    }else if(choice ==Constant.recoverRatio){
       setState(() {
-        international.data.sort((b, a) => international.calculateRatio(a.latestData.recovered, a.latestData.confirmed).compareTo(international.calculateRatio(b.latestData.recovered, b.latestData.confirmed)));
+        international.data.sort((b, a) 
+        => international.calculateRatio(a.latestData.recovered, a.latestData.confirmed).compareTo(international.calculateRatio(b.latestData.recovered, b.latestData.confirmed)));
       });
    }
    else if(choice ==Constant.deathRatio){
@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
         international.data.sort((b, a) => international.calculateRatio(a.latestData.deaths, a.latestData.confirmed).compareTo(international.calculateRatio(b.latestData.deaths, b.latestData.confirmed)));
       });
    }
-   if(choice ==Constant.alphabet){
+   else if(choice ==Constant.alphabet){
       setState(() {
         international.data.sort((a, b) => a.name.compareTo(b.name));
       });
